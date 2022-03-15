@@ -1,0 +1,38 @@
+{
+  "name": "ronin_middleware",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon src/app.ts",
+    "build": "tsc --project ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArrokothRyan/ronin_middleware.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArrokothRyan/ronin_middleware/issues"
+  },
+  "homepage": "https://github.com/ArrokothRyan/ronin_middleware#readme",
+  "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.4",
+    "bip39": "^3.0.4",
+    "body-parser": "^1.19.2",
+    "dotenv": "^16.0.0",
+    "ethereumjs-tx": "^1.3.7",
+    "ethers": "^5.6.0",
+    "web3": "^1.7.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^17.0.21",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  }
+}

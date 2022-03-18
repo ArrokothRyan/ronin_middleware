@@ -1,7 +1,4 @@
-FROM node:12-alpine
-
-# update packages
-RUN apk update
+FROM node:alpine
 
 # create root application folder
 WORKDIR /app
@@ -11,6 +8,8 @@ COPY package*.json ./
 COPY tsconfig.json ./
 # copy source code to /app/src folder
 COPY src /app/src
+
+RUN mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
 
 # check files list
 RUN ls -a

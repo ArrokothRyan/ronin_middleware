@@ -8,7 +8,7 @@ const port = 5000;
 const app: Express = express();
 const apiRouter = new ApiRouter;
 
-const gg = getKeyPairByID(0)
+
 app.use((request: Request, response: Response, next: NextFunction) => {
     response.setHeader("Access-Control-Allow-Origin", "*");
     response.setHeader(

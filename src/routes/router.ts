@@ -19,5 +19,6 @@ export class ApiRouter {
         this.router.post('/transferSLP', jsonParser, apiControllers.transferSLP);
         this.router.post('/createAuction', jsonParser, apiControllers.createAuction);
         this.router.post('/transferAxie', jsonParser , apiControllers.transferAxie);
+        this.router.post('/claimSLP', jsonParser , apiControllers.claimSLP);
     }
 }

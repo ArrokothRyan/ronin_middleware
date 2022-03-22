@@ -1,24 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import {TransferSLPModels} from "../models/slpModel";
+import {ClaimSLP, TransferSLPModels} from "../models/slpModel";
 import Web3 from "web3";
-import {AbiItem} from "web3-utils";
-import {PromiEvent, TransactionReceipt} from "web3-core";
-import {
-    AxieContractABI, AxieContractAddress,
-    MarketplaceABI,
-    MarketplaceContractAddress,
-    RPCEndPoint,
-    SLPContractAddress,
-    TransferABI
-} from "../utils/contractConstant";
-import {getKeyPairByID} from "../utils/hdWallet";
-import Wallet from "ethereumjs-wallet";
 import {SettleAuctionModels} from "../models/marketplaceModels";
 import {TransferAxieModels} from "../models/axieModels";
+import {TransferAxieByContract} from "./axies/transferAxie";
+import {SettleAuctionByContract} from "./marketplace/createOrder";
+import {TransferSLPByContract} from "./slp/transferSLP";
+import {ClaimSLPByContract} from "./slp/claimSLP";
 
 
 export class ApiControllers {
-    async transferSLP(req:Request<TransferSLPModels>, res :  Response, next : NextFunction) {
+    async transferSLP(req:Request<TransferSLPModels>, res :  Response) {
         const SLPData:TransferSLPModels = req.body;
 
         if (!Web3.utils.isAddress(SLPData.to)) {
@@ -30,7 +22,7 @@ export class ApiControllers {
         res.send(tx);
     }
 
-    async createAuction(req:Request<SettleAuctionModels>, res :  Response, next : NextFunction) {
+    async createAuction(req:Request<SettleAuctionModels>, res :  Response) {
         const auctionData:SettleAuctionModels = req.body;
 
         res.type("appliation/json");
@@ -47,7 +39,7 @@ export class ApiControllers {
         res.send(tx);
     }
 
-    async transferAxie(req:Request<TransferAxieModels>, res :  Response, next : NextFunction) {
+    async transferAxie(req:Request<TransferAxieModels>, res :  Response) {
         const transferData:TransferAxieModels = req.body;
         res.type("appliation/json");
 
@@ -65,112 +57,60 @@ export class ApiControllers {
 
     }
 
-}
+    async claimSLP(req:Request<ClaimSLP>, res : Response) {
+        const transferData:ClaimSLP = req.body;
+        res.type("appliation/json");
 
-async function TransferSLPByContract(SLPData:TransferSLPModels) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
-    let HDWallet:Wallet
+        const tx = await ClaimSLPByContract(transferData).catch((errors) =>
+        {
+            if(errors.receipt != undefined) {
+                errors.receipt.error = errors.message
+                res.send(errors.receipt)
+            }else {
+                res.send({"error": errors.message})
+            }
 
-    try {
-         HDWallet = await getKeyPairByID(SLPData.wallet_id)
-    }catch (err) {
-        throw err
+        });
+        res.send(tx);
     }
 
-    const slpInstance = new web3.eth.Contract(TransferABI as AbiItem[],SLPContractAddress);
-
-    const data = await slpInstance.methods.transfer(SLPData.to , SLPData.amount).encodeABI();
-    const nonce = await web3.eth.getTransactionCount(HDWallet.getAddressString())
-
-    const signTx = await web3.eth.accounts.signTransaction({
-        to: SLPContractAddress,
-        value: '0',
-        gas: 50000,
-        gasPrice: '1000000000',
-        nonce: nonce,
-        chainId: 2020,
-        data : data
-    }, HDWallet.getPrivateKeyString())
-
-    const rawTx:string = signTx.rawTransaction || ''
-
-    let receipt:TransactionReceipt;
-    try {
-        receipt = await web3.eth.sendSignedTransaction(rawTx)
-    } catch (err) {
-        throw err
-    }
-    return receipt
-}
-
-
-async function SettleAuctionByContract(AuctionData:SettleAuctionModels) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
-    let HDWallet:Wallet
-    try {
-        HDWallet = await getKeyPairByID(AuctionData.wallet_id)
-    }catch (err) {
-        throw err
-    }
-
-    const marketplaceInstance = new web3.eth.Contract(MarketplaceABI as AbiItem[],MarketplaceContractAddress);
-
-    const data = await marketplaceInstance.methods.settleAuction(AuctionData.seller, AuctionData.token_address, BigInt(AuctionData.amount), BigInt(AuctionData.listing_index), BigInt(AuctionData.listing_state)).encodeABI();
-    const nonce = await web3.eth.getTransactionCount(HDWallet.getAddressString())
-
-    const signTx = await web3.eth.accounts.signTransaction({
-        to: MarketplaceContractAddress,
-        value: '0',
-        gas: 500000,
-        gasPrice: '1000000000',
-        nonce: nonce,
-        chainId: 2020,
-        data : data
-    }, HDWallet.getPrivateKeyString())
-
-    const rawTx:string = signTx.rawTransaction || ''
-
-    let receipt:TransactionReceipt;
-    try {
-        receipt = await web3.eth.sendSignedTransaction(rawTx)
-    } catch (err) {
-        throw err
-    }
-    return receipt
 }
 
 
 
-async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
-    const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
-    let HDWallet:Wallet
 
-    try {
-        HDWallet = await getKeyPairByID(TransferAxie.wallet_id)
-    }catch (err) {
-        throw err
-    }
 
-    const AxieInstance = new web3.eth.Contract(AxieContractABI as AbiItem[],AxieContractAddress);
 
-    const data = await AxieInstance.methods.safeTransferFrom(HDWallet.getAddressString() , TransferAxie.to_address, TransferAxie.token_id).encodeABI();
-    const nonce = await web3.eth.getTransactionCount(HDWallet.getAddressString())
-
-    const signTx = await web3.eth.accounts.signTransaction({
-        to: AxieContractAddress,
-        value: '0',
-        gas: 200000,
-        gasPrice: '1000000000',
-        nonce: nonce,
-        chainId: 2020,
-        data : data
-    }, HDWallet.getPrivateKeyString())
-
-    let receipt:TransactionReceipt;
-    try {
-        receipt = await web3.eth.sendSignedTransaction(signTx.rawTransaction??'')
-    } catch (err) {
-        throw err
-    }
-    return receipt
-}
+// async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
+//     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
+//     let HDWallet:Wallet
+//
+//     try {
+//         HDWallet = await getKeyPairByID(TransferAxie.wallet_id)
+//     }catch (err) {
+//         throw err
+//     }
+//
+//     const AxieInstance = new web3.eth.Contract(AxieContractABI as AbiItem[],AxieContractAddress);
+//
+//     const data = await AxieInstance.methods.safeTransferFrom(HDWallet.getAddressString() , TransferAxie.to_address, TransferAxie.token_id).encodeABI();
+//     const nonce = await web3.eth.getTransactionCount(HDWallet.getAddressString())
+//
+//     const signTx = await web3.eth.accounts.signTransaction({
+//         to: AxieContractAddress,
+//         value: '0',
+//         gas: 200000,
+//         gasPrice: '1000000000',
+//         nonce: nonce,
+//         chainId: 2020,
+//         data : data
+//     }, HDWallet.getPrivateKeyString())
+//
+//     let receipt:TransactionReceipt;
+//     try {
+//         receipt = await web3.eth.sendSignedTransaction(signTx.rawTransaction??'')
+//     } catch (err) {
+//         throw err
+//     }
+//     return receipt
+// }

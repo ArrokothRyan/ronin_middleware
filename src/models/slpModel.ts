@@ -7,3 +7,12 @@ export interface TransferSLPModels extends Express.Request {
     amount: number,
 }
 
+
+export interface ClaimSLP extends Express.Request {
+    manager_code : string,
+    wallet_id: number,
+    owner : string,
+    amount: number,
+    createAt: number,
+    signature : string
+}

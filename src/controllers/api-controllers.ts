@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import {ClaimSLP, TransferSLPModels} from "../models/slpModel";
+import { ClaimSLPRequest, TransferSLPModels} from "../models/slpModel";
 import Web3 from "web3";
 import {SettleAuctionModels} from "../models/marketplaceModels";
 import {TransferAxieModels} from "../models/axieModels";
@@ -57,11 +57,11 @@ export class ApiControllers {
 
     }
 
-    async claimSLP(req:Request<ClaimSLP>, res : Response) {
-        const transferData:ClaimSLP = req.body;
+    async claimSLP(req:Request<ClaimSLPRequest>, res : Response) {
+        const claimData:ClaimSLPRequest = req.body;
         res.type("appliation/json");
 
-        const tx = await ClaimSLPByContract(transferData).catch((errors) =>
+        const tx = await ClaimSLPByContract(claimData).catch((errors) =>
         {
             if(errors.receipt != undefined) {
                 errors.receipt.error = errors.message
@@ -71,46 +71,8 @@ export class ApiControllers {
             }
 
         });
+
         res.send(tx);
     }
 
 }
-
-
-
-
-
-
-// async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
-//     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
-//     let HDWallet:Wallet
-//
-//     try {
-//         HDWallet = await getKeyPairByID(TransferAxie.wallet_id)
-//     }catch (err) {
-//         throw err
-//     }
-//
-//     const AxieInstance = new web3.eth.Contract(AxieContractABI as AbiItem[],AxieContractAddress);
-//
-//     const data = await AxieInstance.methods.safeTransferFrom(HDWallet.getAddressString() , TransferAxie.to_address, TransferAxie.token_id).encodeABI();
-//     const nonce = await web3.eth.getTransactionCount(HDWallet.getAddressString())
-//
-//     const signTx = await web3.eth.accounts.signTransaction({
-//         to: AxieContractAddress,
-//         value: '0',
-//         gas: 200000,
-//         gasPrice: '1000000000',
-//         nonce: nonce,
-//         chainId: 2020,
-//         data : data
-//     }, HDWallet.getPrivateKeyString())
-//
-//     let receipt:TransactionReceipt;
-//     try {
-//         receipt = await web3.eth.sendSignedTransaction(signTx.rawTransaction??'')
-//     } catch (err) {
-//         throw err
-//     }
-//     return receipt
-// }

@@ -7,7 +7,7 @@
     "start": "nodemon src/app.ts",
     "build": "tsc --project ./",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean" : "tsc --build --clean"
+    "clean": "tsc --build --clean"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ArrokothRyan/ronin_middleware#readme",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.4",
+    "axios": "^0.26.1",
     "bip39": "^3.0.4",
     "body-parser": "^1.19.2",
     "dotenv": "^16.0.0",

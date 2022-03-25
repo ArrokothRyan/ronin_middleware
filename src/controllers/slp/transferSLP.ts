@@ -1,4 +1,4 @@
-import {TransferSLPModels} from "../../models/slpModel";
+import {CustomReceipt, TransferSLPModels} from "../../models/slpModel";
 import Web3 from "web3";
 import {RPCEndPoint, SLPContractABI, SLPContractAddress} from "../../utils/contractConstant";
 import Wallet from "ethereumjs-wallet";
@@ -24,7 +24,7 @@ export async function TransferSLPByContract(SLPData:TransferSLPModels) {
     const signTx = await web3.eth.accounts.signTransaction({
         to: SLPContractAddress,
         value: '0',
-        gas: 50000,
+        gas: 100000,
         gasPrice: '1000000000',
         nonce: nonce,
         chainId: 2020,
@@ -39,5 +39,6 @@ export async function TransferSLPByContract(SLPData:TransferSLPModels) {
     } catch (err) {
         throw err
     }
+
     return receipt
 }

@@ -1,13 +1,10 @@
-import {ClaimSLP, ClaimSLPRequest} from "../../models/slpModel";
+import {ClaimSLPRequest, CustomReceipt} from "../../models/slpModel";
 import Web3 from "web3";
 import {RPCEndPoint, SLPContractABI, SLPContractAddress} from "../../utils/contractConstant";
-import Wallet from "ethereumjs-wallet";
-import {getKeyPairByID, getKeyPairBySeedAndID} from "../../utils/hdWallet";
 import {AbiItem} from "web3-utils";
 import {TransactionReceipt} from "web3-core";
 import {GetClaimInfo} from "../../external/services";
-import {errors} from "ethers";
-import {throws} from "assert";
+
 
 export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest) {
     let claimData = await GetClaimInfo(Userinfo).catch((errors) => {
@@ -23,7 +20,7 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest) {
     const signTx = await web3.eth.accounts.signTransaction({
         to: SLPContractAddress,
         value: '0',
-        gas: 100000,
+        gas: 500000,
         gasPrice: '1000000000',
         nonce: nonce,
         chainId: 2020,
@@ -32,11 +29,15 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest) {
 
     const rawTx:string = signTx.rawTransaction || ''
 
-    let receipt:TransactionReceipt;
+    let txReceipt:TransactionReceipt;
+
     try {
-        receipt = await web3.eth.sendSignedTransaction(rawTx)
+        txReceipt = await web3.eth.sendSignedTransaction(rawTx)
     } catch (err) {
         throw err
     }
+
+    let receipt:CustomReceipt = { amount : claimData.amount , ...txReceipt}
+
     return receipt
 }

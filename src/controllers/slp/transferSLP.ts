@@ -2,7 +2,7 @@ import {CustomReceipt, TransferSLPModels} from "../../models/slpModel";
 import Web3 from "web3";
 import {RPCEndPoint, SLPContractABI, SLPContractAddress} from "../../utils/contractConstant";
 import Wallet from "ethereumjs-wallet";
-import {getKeyPairByID} from "../../utils/hdWallet";
+import {getKeyPairByID, getKeyPairBySeedAndID} from "../../utils/hdWallet";
 import {AbiItem} from "web3-utils";
 import {TransactionReceipt} from "web3-core";
 
@@ -11,7 +11,7 @@ export async function TransferSLPByContract(SLPData:TransferSLPModels) {
     let HDWallet:Wallet
 
     try {
-        HDWallet = await getKeyPairByID(SLPData.wallet_id)
+        HDWallet = await getKeyPairBySeedAndID(SLPData.manager_code, SLPData.wallet_id)
     }catch (err) {
         throw err
     }

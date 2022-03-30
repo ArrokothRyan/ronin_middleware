@@ -4,6 +4,7 @@ import Wallet from "ethereumjs-wallet";
 import {TransactionReceipt} from "web3-core";
 
 export interface TransferSLPModels extends Express.Request {
+    manager_code : string,
     wallet_id: number,
     to : string,
     amount: number,
@@ -12,7 +13,8 @@ export interface TransferSLPModels extends Express.Request {
 
 export interface ClaimSLPRequest extends Express.Request {
     manager_code : string,
-    wallet_id: number
+    wallet_id: number,
+    receive_address : string
 }
 
 

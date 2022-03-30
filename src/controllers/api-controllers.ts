@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ClaimSLPRequest, TransferSLPModels} from "../models/slpModel";
+import {ClaimSLP, ClaimSLPRequest, CustomReceipt, TransferSLPModels} from "../models/slpModel";
 import Web3 from "web3";
 import {SettleAuctionModels} from "../models/marketplaceModels";
 import {TransferAxieModels} from "../models/axieModels";
@@ -61,18 +61,20 @@ export class ApiControllers {
         const claimData:ClaimSLPRequest = req.body;
         res.type("appliation/json");
 
-        const tx = await ClaimSLPByContract(claimData).catch((errors) =>
-        {
-            if(errors.receipt != undefined) {
+        const tx:CustomReceipt = await ClaimSLPByContract(claimData).catch((errors) => {
+            if (errors.receipt != undefined) {
                 errors.receipt.error = errors.message
                 res.send(errors.receipt)
-            }else {
+                return
+            } else {
                 res.send({"error": errors.message})
+                return
             }
 
         });
-
         res.send(tx);
+
+
     }
 
 }

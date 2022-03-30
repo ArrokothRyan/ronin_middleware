@@ -4,9 +4,6 @@ import {ClaimSLP, ClaimSLPRequest} from "../models/slpModel";
 import {getKeyPairBySeedAndID} from "../utils/hdWallet";
 import Wallet from "ethereumjs-wallet";
 import axios from "axios";
-import {config} from "dotenv";
-import {errors} from "ethers";
-import {strict} from "assert";
 import {CustomError} from "../utils/error";
 
 
@@ -36,9 +33,9 @@ export async function GetClaimInfo(claimData:ClaimSLPRequest):Promise<ClaimSLP>{
 
     const signature = {
         wallet: HDWallet,
-        amount: claimInfo.amount,
-        createAt: claimInfo.timestamp,
-        signature : claimInfo.signature
+        amount: claimInfo.claimable_total,
+        createAt: claimInfo.blockchain_related.signature.timestamp,
+        signature : claimInfo.blockchain_related.signature.signature
     } as ClaimSLP
 
 
@@ -97,9 +94,8 @@ async function GetClaimParams(accessToken:string, _owner:string, _message:string
         throw err
     })
 
-    if (claimInfo.data.blockchain_related.signature == null) {
+    if (claimInfo.data.blockchain_related.signature == null || claimInfo.data.blockchain_related.amount == 0) {
         throw new CustomError("Can not claim now.")
     }
-
-    return claimInfo.data.blockchain_related.signature
+    return claimInfo.data
 }

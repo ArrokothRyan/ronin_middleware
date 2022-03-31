@@ -9,7 +9,8 @@ require('dotenv').config()
 const ManagerSeed = {
     MRA: process.env.MRASeed,
     K: process.env.KSeed,
-    OW: process.env.OWSeed
+    OW: process.env.OWSeed,
+    AD: process.env.ADSeed
 }
 
 

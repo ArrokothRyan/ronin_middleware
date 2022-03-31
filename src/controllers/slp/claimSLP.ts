@@ -49,6 +49,6 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest):Promise<any> 
         throw err
     }
 
-    let receipt:CustomReceipt = { amount : claimData.amount , ...txReceipt}
+    let receipt:CustomReceipt = { amount : claimData.real_total , ...txReceipt}
     return receipt
 }

@@ -31,11 +31,16 @@ export async function GetClaimInfo(claimData:ClaimSLPRequest):Promise<ClaimSLP>{
         throw err
     })
 
+    if (claimInfo.claimable_total == 0 ) {
+        throw new CustomError("Claimable total 0");
+    }
+
     const signature = {
         wallet: HDWallet,
-        amount: claimInfo.claimable_total,
+        amount: claimInfo.raw_claimable_total,
         createAt: claimInfo.blockchain_related.signature.timestamp,
-        signature : claimInfo.blockchain_related.signature.signature
+        signature : claimInfo.blockchain_related.signature.signature,
+        real_total: claimInfo.total
     } as ClaimSLP
 
 
@@ -94,7 +99,7 @@ async function GetClaimParams(accessToken:string, _owner:string, _message:string
         throw err
     })
 
-    if (claimInfo.data.blockchain_related.signature == null || claimInfo.data.blockchain_related.amount == 0) {
+    if (claimInfo.data.blockchain_related.signature == null) {
         throw new CustomError("Can not claim now.")
     }
     return claimInfo.data

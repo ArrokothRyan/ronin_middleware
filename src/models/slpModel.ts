@@ -24,7 +24,8 @@ export interface ClaimSLP extends Express.Request {
     owner : string,
     amount: number,
     createAt: number,
-    signature : string
+    signature : string,
+    real_total : number
 }
 
 export interface CustomReceipt extends TransactionReceipt {

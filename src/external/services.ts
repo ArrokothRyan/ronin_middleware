@@ -47,7 +47,7 @@ export async function GetClaimInfo(claimData:ClaimSLPRequest):Promise<ClaimSLP>{
     return signature;
 }
 
-async function CreateRandomMessage() {
+export async function CreateRandomMessage() {
     const res = await axios.post("https://graphql-gateway.axieinfinity.com/graphql", {
         "operationName": "CreateRandomMessage",
         "variables": {},
@@ -59,7 +59,7 @@ async function CreateRandomMessage() {
 
 }
 
-async function GetAccessToken(walletAddress:string, randomMsg:string, sign: string) {
+export async function GetAccessToken(walletAddress:string, randomMsg:string, sign: string) {
     const accessTokenReq = await axios.post("https://graphql-gateway.axieinfinity.com/graphql", {
         "operationName": "CreateAccessTokenWithSignature",
         "variables": {

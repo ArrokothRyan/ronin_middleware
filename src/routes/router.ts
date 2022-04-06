@@ -21,6 +21,6 @@ export class ApiRouter {
         this.router.post('/transferAxie', jsonParser , apiControllers.transferAxie);
         this.router.post('/claimSLP', jsonParser , apiControllers.claimSLP);
 
-        this.router.get('/getAccessToken', jsonParser , apiControllers.getAccessToken);
+        this.router.post('/getAccessToken', jsonParser , apiControllers.getAccessToken);
     }
 }

@@ -11,8 +11,7 @@ export async function RequestGetAccessToken(accessTokenRequest:AccessTokenReques
     let HDWallet:Wallet
 
     try{
-        HDWallet = await getKeyPairBySeedAndID(accessTokenRequest.manager_code,accessTokenRequest.wallet_id)
-        // HDWallet = await getKeyPairBySeedAndID("MRA",2)
+        HDWallet = await getKeyPairBySeedAndID(accessTokenRequest.team_code,accessTokenRequest.team_id)
     } catch (err) {
         throw err
     }

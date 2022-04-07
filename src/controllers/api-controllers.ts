@@ -60,7 +60,7 @@ export class ApiControllers {
     }
 
     async getAccessToken(req:Request<AccessTokenRequest>, res : Response){
-        const accessTokenRequest:AccessTokenRequest = req.body;
+        const accessTokenRequest:AccessTokenRequest = req.params;
         res.type("application/json");
 
         const tx:CustomReceipt = await RequestGetAccessToken(accessTokenRequest).catch((errors) => {

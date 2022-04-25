@@ -10,7 +10,8 @@ const ManagerSeed = {
     MRA: process.env.MRASeed,
     K: process.env.KSeed,
     OW: process.env.OWSeed,
-    AD: process.env.ADSeed
+    AD: process.env.ADSeed,
+    T_BOT: process.env.TradingBotSeed
 }
 
 

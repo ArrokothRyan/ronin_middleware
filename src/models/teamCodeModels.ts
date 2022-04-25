@@ -1,6 +1,6 @@
 import Express from 'express';
 
-export interface AccessTokenRequest extends Express.Request{
+export interface TeamCodeModel extends Express.Request{
     team_code : string,
     team_id: number
 }

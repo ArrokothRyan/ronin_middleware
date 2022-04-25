@@ -8,7 +8,12 @@ import {SettleAuctionByContract} from "./marketplace/createOrder";
 import {TransferSLPByContract} from "./slp/transferSLP";
 import {ClaimSLPByContract} from "./slp/claimSLP";
 import {RequestGetAccessToken} from "./accesstoken/getAccessToken";
-import {AccessTokenRequest} from "../models/accessTokenModels";
+import {TeamCodeModel} from "../models/teamCodeModels";
+import {CustomError} from "../utils/error";
+import bip39 from "bip39";
+import etherWallet from "ethereumjs-wallet";
+import Wallet from "ethereumjs-wallet";
+import {getKeyPairBySeedAndID} from "../utils/hdWallet";
 
 
 export class ApiControllers {
@@ -41,7 +46,7 @@ export class ApiControllers {
         res.send(tx);
     }
 
-    async transferAxie(req:Request<TransferAxieModels>, res :  Response) {
+    async transferAxieByTeamCode(req:Request<TransferAxieModels>, res : Response) {
         const transferData:TransferAxieModels = req.body;
         res.type("application/json");
 
@@ -59,8 +64,9 @@ export class ApiControllers {
 
     }
 
-    async getAccessToken(req:Request<AccessTokenRequest>, res : Response){
-        const accessTokenRequest:AccessTokenRequest = req.params;
+
+    async getAccessToken(req:Request<TeamCodeModel>, res : Response){
+        const accessTokenRequest:TeamCodeModel = req.params;
         res.type("application/json");
 
         const tx:CustomReceipt = await RequestGetAccessToken(accessTokenRequest).catch((errors) => {
@@ -75,6 +81,13 @@ export class ApiControllers {
 
         });
         res.send(tx);
+    }
+
+    async getWalletAddress(req:Request<TeamCodeModel>, res : Response){
+        const getWalletAddressRequest:TeamCodeModel = req.params;
+        res.type("application/json");
+        const wallet  = await getKeyPairBySeedAndID(getWalletAddressRequest.team_code, getWalletAddressRequest.team_id)
+        res.send({address : wallet.getAddressString()});
     }
 
     async claimSLP(req:Request<ClaimSLPRequest>, res : Response) {

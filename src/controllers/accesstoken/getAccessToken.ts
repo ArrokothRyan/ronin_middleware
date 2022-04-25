@@ -3,10 +3,10 @@ import {RPCEndPoint} from "../../utils/contractConstant";
 import {CreateRandomMessage, GetAccessToken} from "../../external/services";
 import Wallet from "ethereumjs-wallet";
 import {getKeyPairBySeedAndID} from "../../utils/hdWallet";
-import {AccessTokenReceipt, AccessTokenRequest} from "../../models/accessTokenModels";
+import {AccessTokenReceipt, TeamCodeModel} from "../../models/teamCodeModels";
 
 
-export async function RequestGetAccessToken(accessTokenRequest:AccessTokenRequest):Promise<any> {
+export async function RequestGetAccessToken(accessTokenRequest:TeamCodeModel):Promise<any> {
     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
     let HDWallet:Wallet
 

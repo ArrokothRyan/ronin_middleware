@@ -1,8 +1,10 @@
 import Express from 'express';
 
 export interface TransferAxieModels extends Express.Request {
-    wallet_id : number,
-    to_address : string,
+    from_team_code: string,
+    from_scholar_id : number,
+    to_team_code : string,
+    to_scholar_id : number,
     token_id : number
 }
 

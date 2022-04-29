@@ -5,6 +5,7 @@ import Wallet from "ethereumjs-wallet";
 import {getKeyPairByID, getKeyPairBySeedAndID} from "../../utils/hdWallet";
 import {AbiItem} from "web3-utils";
 import {TransactionReceipt} from "web3-core";
+import {CheckRonBalance, SendRonToAddress} from "../../utils/services";
 
 export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
@@ -13,6 +14,7 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     try{
         HDWallet = await getKeyPairBySeedAndID(TransferAxie.from_team_code,TransferAxie.from_scholar_id)
     } catch (err) {
+        console.log("get pair error")
         throw err
     }
 
@@ -23,6 +25,15 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     } catch (err) {
         throw err
     }
+
+    let balance = await CheckRonBalance(web3,HDWallet.getAddressString())
+
+    if(Number(balance) < 1000000000000000 ) {
+        await SendRonToAddress(web3,HDWallet.getAddressString()).catch(function (err) { throw err })
+        await new Promise(f => setTimeout(f, 3000));
+        console.log("Finish send RON to : ", HDWallet.getAddressString())
+    }
+
 
     const AxieInstance = new web3.eth.Contract(AxieContractABI as AbiItem[],AxieContractAddress);
 

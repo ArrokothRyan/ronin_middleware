@@ -14,7 +14,7 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     try{
         HDWallet = await getKeyPairBySeedAndID(TransferAxie.from_team_code,TransferAxie.from_scholar_id)
     } catch (err) {
-        console.log("get pair error")
+        console.log("ERR: Fail to get sender account." ,err)
         throw err
     }
 
@@ -23,6 +23,7 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     try{
         ReceiverHDWallet = await getKeyPairBySeedAndID(TransferAxie.to_team_code,TransferAxie.to_scholar_id)
     } catch (err) {
+        console.log("ERR: Fail to get receiver account.", err)
         throw err
     }
 

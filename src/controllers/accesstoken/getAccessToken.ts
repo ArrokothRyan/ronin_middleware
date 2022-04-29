@@ -9,7 +9,6 @@ import {AccessTokenReceipt, TeamCodeModel} from "../../models/teamCodeModels";
 export async function RequestGetAccessToken(accessTokenRequest:TeamCodeModel):Promise<any> {
     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
     let HDWallet:Wallet
-
     try{
         HDWallet = await getKeyPairBySeedAndID(accessTokenRequest.team_code,accessTokenRequest.team_id)
     } catch (err) {

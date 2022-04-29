@@ -1,6 +1,7 @@
 import Wallet from "ethereumjs-wallet";
 import {errors} from "ethers";
 import {CustomError} from "./error";
+import Web3 from "web3";
 
 const etherWallet = require("ethereumjs-wallet");
 const bip39 = require("bip39")
@@ -41,4 +42,5 @@ export async function getKeyPairBySeedAndID(teamCode:string,id:number) {
     const wallet:Wallet = masterWallet.derivePath(path).getWallet();
     return wallet
 }
+
 

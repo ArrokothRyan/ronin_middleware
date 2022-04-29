@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import {throws} from "assert";
 import {TransactionReceipt} from "web3-core";
+const privateKeyToAddress = require('ethereum-private-key-to-address')
 require('dotenv').config()
 
 
@@ -10,8 +11,7 @@ export async function CheckRonBalance(web3:Web3, wallet:string) {
 }
 
 export async function SendRonToAddress(web3:Web3, to_address:string) {
-    const faucatAccount = web3.eth.accounts.privateKeyToAccount(process.env.FAUCET_KEY??"")
-    const nonce = await web3.eth.getTransactionCount(faucatAccount.address)
+    const nonce = await web3.eth.getTransactionCount(privateKeyToAddress(process.env.FAUCET_KEY??""))
     const signTx = await web3.eth.accounts.signTransaction({
         to: web3.utils.toChecksumAddress(to_address),
         value: '10000000000000000',

@@ -86,8 +86,14 @@ export class ApiControllers {
     async getWalletAddress(req:Request<TeamCodeModel>, res : Response){
         const getWalletAddressRequest:TeamCodeModel = req.params;
         res.type("application/json");
-        const wallet  = await getKeyPairBySeedAndID(getWalletAddressRequest.team_code, getWalletAddressRequest.team_id)
-        res.send({address : wallet.getAddressString()});
+        const wallet  = await getKeyPairBySeedAndID(getWalletAddressRequest.team_code, getWalletAddressRequest.team_id).catch((errors) =>
+        {
+            res.send({"error": errors.message})
+            return
+        })
+        if (wallet instanceof Wallet) {
+            res.send({address: wallet.getAddressString()});
+        }
     }
 
     async claimSLP(req:Request<ClaimSLPRequest>, res : Response) {

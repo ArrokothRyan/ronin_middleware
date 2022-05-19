@@ -12,16 +12,17 @@ export async function CheckRonBalance(web3:Web3, wallet:string) {
 
 export async function SendRonToAddress(web3:Web3, to_address:string) {
     const nonce = await web3.eth.getTransactionCount(privateKeyToAddress(process.env.FAUCET_KEY??""))
+    console.log(privateKeyToAddress(process.env.FAUCET_KEY??""));
+
     const signTx = await web3.eth.accounts.signTransaction({
         to: web3.utils.toChecksumAddress(to_address),
-        value: '10000000000000000',
+        value: '1000000000000000',
         gas: 21000,
         gasPrice: '1000000000',
         nonce: nonce,
         chainId: 2020,
     }, process.env.FAUCET_KEY??"")
     const rawTx:string = signTx.rawTransaction || ''
-
     let txReceipt:TransactionReceipt;
 
     try {

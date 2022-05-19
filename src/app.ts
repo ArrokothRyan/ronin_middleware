@@ -1,8 +1,9 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { ApiRouter } from './routes/router';
 import {getKeyPairByID} from "./utils/hdWallet";
-
-
+require('dotenv').config()
+import Web3 from "web3";
+const privateKeyToAddress = require('ethereum-private-key-to-address')
 const port = 5000;
 
 const app: Express = express();

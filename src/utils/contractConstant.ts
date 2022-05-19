@@ -1,5 +1,5 @@
 
-export const RPCEndPoint = "http://18.178.61.253:8547/"
+export const RPCEndPoint = "http://192.168.1.200:8545"
 
 export const MarketplaceContractAddress = "0x213073989821f738a7ba3520c3d31a1f9ad31bbd"
 export const SLPContractAddress = "0xa8754b9fa15fc18bb59458815510e40a12cd2014"

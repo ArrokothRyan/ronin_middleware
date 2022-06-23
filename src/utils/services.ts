@@ -6,7 +6,7 @@ require('dotenv').config()
 
 
 export async function CheckRonBalance(web3:Web3, wallet:string) {
-    let balance = await web3.eth.getBalance(wallet).catch((error) => throws(error))
+    let balance = await web3.eth.getBalance(web3.utils.toChecksumAddress(wallet)).catch((error) => throws(error))
     return balance
 }
 
@@ -15,7 +15,7 @@ export async function SendRonToAddress(web3:Web3, to_address:string) {
     console.log(privateKeyToAddress(process.env.FAUCET_KEY??""));
 
     const signTx = await web3.eth.accounts.signTransaction({
-        to: web3.utils.toChecksumAddress(to_address),
+        to: to_address,
         value: '1000000000000000',
         gas: 21000,
         gasPrice: '1000000000',

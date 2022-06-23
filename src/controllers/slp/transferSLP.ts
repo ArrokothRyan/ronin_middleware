@@ -7,6 +7,7 @@ import {AbiItem} from "web3-utils";
 import {TransactionReceipt} from "web3-core";
 
 export async function TransferSLPByContract(SLPData:TransferSLPModels) {
+
     const web3 = new Web3(new Web3.providers.HttpProvider(RPCEndPoint));
     let HDWallet:Wallet
 

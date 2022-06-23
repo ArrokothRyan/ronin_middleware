@@ -31,15 +31,15 @@ export async function GetClaimInfo(claimData:ClaimSLPRequest):Promise<ClaimSLP>{
         throw err
     })
 
-    if (claimInfo.claimable_total == 0 ) {
+    if (claimInfo.rawClaimableTotal == 0 ) {
         throw new CustomError("Claimable total 0");
     }
 
     const signature = {
         wallet: HDWallet,
-        amount: claimInfo.raw_claimable_total,
-        createAt: claimInfo.blockchain_related.signature.timestamp,
-        signature : claimInfo.blockchain_related.signature.signature,
+        amount: claimInfo.blockchainRelated.signature.amount,
+        createAt: claimInfo.blockchainRelated.signature.timestamp,
+        signature : claimInfo.blockchainRelated.signature.signature,
         real_total: claimInfo.total
     } as ClaimSLP
 
@@ -79,7 +79,7 @@ export async function GetAccessToken(walletAddress:string, randomMsg:string, sig
 
 
 async function GetClaimParams(accessToken:string, _owner:string, _message:string, _signature:string) {
-    const claimInfo = await axios.post("https://game-api.skymavis.com/game-api/clients/"+_owner+"/items/1/claim", {
+    const claimInfo = await axios.post("http://game-api-pre.skymavis.com/v1/players/me/items/1/claim", {
         "operationName": "CreateAccessTokenWithSignature",
         "variables": {
             "input": {
@@ -91,16 +91,26 @@ async function GetClaimParams(accessToken:string, _owner:string, _message:string
         },
         "query": "mutation CreateAccessTokenWithSignature($input: SignatureInput!)\n{createAccessTokenWithSignature(input: $input)\n{newAccount result accessToken __typename}}"
     }, {
-        headers :{
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36',
-            'Authorization': 'Bearer '+accessToken
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36',
+                'Authorization': 'Bearer ' + accessToken
+            }
         }
-    }).catch(function (err){
+    // const claimInfo = await axios.get("https://game-api-pre.skymavis.com/v1/players/"+_owner+"/items/1", {
+    //     headers :{
+    //         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36',
+    //         'Authorization': 'Bearer '+accessToken
+    //     }
+    // }
+    ).catch(function (err){
         throw err
     })
 
-    if (claimInfo.data.blockchain_related.signature == null) {
+    if (claimInfo.data.blockchainRelated.signature == null) {
         throw new CustomError("Can not claim now.")
     }
+    // if (claimInfo.data.total == 0) {
+    //     throw new CustomError("Can not claim now.")
+    // }
     return claimInfo.data
 }

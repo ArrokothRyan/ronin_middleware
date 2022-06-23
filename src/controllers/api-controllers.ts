@@ -25,8 +25,20 @@ export class ApiControllers {
         }
 
         res.type("application/json");
-        const tx = await TransferSLPByContract(SLPData).catch((errors) => res.send(JSON.stringify(errors.receipt)));
-        res.send(tx);
+        const tx = await TransferSLPByContract(SLPData).catch((errors) =>
+        {
+            if(errors.receipt != undefined) {
+                errors.receipt.error = errors.message
+                res.send(errors.receipt)
+            }else {
+                res.send({"error": errors.message})
+            }
+        });
+        if (tx != undefined ){
+            res.send(tx);
+
+        }
+
     }
 
     async createAuction(req:Request<SettleAuctionModels>, res :  Response) {
@@ -43,7 +55,10 @@ export class ApiControllers {
             }
 
         });
-        res.send(tx);
+        if (tx != undefined ){
+            res.send(tx);
+
+        }
     }
 
     async transferAxieByTeamCode(req:Request<TransferAxieModels>, res : Response) {
@@ -60,7 +75,10 @@ export class ApiControllers {
             }
 
         });
-        res.send(tx);
+        if (tx != undefined ){
+            res.send(tx);
+
+        }
 
     }
 
@@ -80,7 +98,10 @@ export class ApiControllers {
             }
 
         });
-        res.send(tx);
+        if (tx != undefined ){
+            res.send(tx);
+
+        }
     }
 
     async getWalletAddress(req:Request<TeamCodeModel>, res : Response){
@@ -111,7 +132,10 @@ export class ApiControllers {
             }
 
         });
-        res.send(tx);
+        if (tx != undefined ){
+            res.send(tx);
+
+        }
 
 
     }

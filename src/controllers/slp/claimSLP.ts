@@ -19,7 +19,7 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest):Promise<any> 
 
     let balance = await CheckRonBalance(web3,claimData.wallet.getAddressString())
 
-    if(Number(balance) < 1000000000000000 && claimData.amount > 0) {
+    if(Number(balance) <= 1000000000000000  && claimData.amount > 0) {
         await SendRonToAddress(web3,claimData.wallet.getAddressString()).catch(function (err) { throw err })
         await new Promise(f => setTimeout(f, 3000));
         console.log("Finish send RON to : ", claimData.wallet.getAddressString())
@@ -28,11 +28,10 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest):Promise<any> 
     const slpInstance = new web3.eth.Contract(SLPContractABI as AbiItem[],SLPContractAddress);
     const data = await slpInstance.methods.checkpoint(claimData.wallet.getAddressString() , claimData.amount,claimData.createAt, web3.utils.hexToBytes(claimData.signature)).encodeABI();
     const nonce = await web3.eth.getTransactionCount(claimData.wallet.getAddressString())
-
     const signTx = await web3.eth.accounts.signTransaction({
         to: SLPContractAddress,
         value: '0',
-        gas: 150000,
+        gas: 124920,
         gasPrice: '1000000000',
         nonce: nonce,
         chainId: 2020,
@@ -42,13 +41,13 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest):Promise<any> 
     const rawTx:string = signTx.rawTransaction || ''
 
     let txReceipt:TransactionReceipt;
-
+    let receipt:CustomReceipt
     try {
         txReceipt = await web3.eth.sendSignedTransaction(rawTx)
+        receipt = { amount : claimData.real_total , ...txReceipt}
     } catch (err) {
         throw err
     }
 
-    let receipt:CustomReceipt = { amount : claimData.real_total , ...txReceipt}
     return receipt
 }

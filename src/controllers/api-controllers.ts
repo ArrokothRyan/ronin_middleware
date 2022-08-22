@@ -41,7 +41,7 @@ export class ApiControllers {
 
     }
 
-    async createAuction(req:Request<SettleAuctionModels>, res :  Response) {
+    async createAuction(req:Request<SettleAuctionModels>, res : Response) {
         const auctionData:SettleAuctionModels = req.body;
 
         res.type("application/json");

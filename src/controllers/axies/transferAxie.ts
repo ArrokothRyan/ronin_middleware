@@ -18,6 +18,7 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
         throw err
     }
 
+
     //To address
     let ReceiverHDWallet:Wallet
     try{
@@ -28,8 +29,7 @@ export async function TransferAxieByContract(TransferAxie:TransferAxieModels) {
     }
 
     let balance = await CheckRonBalance(web3,HDWallet.getAddressString())
-    console.log(Number(balance))
-    if(Number(balance) < 1000000000000000 ) {
+    if(Number(balance) < 100000000000000000 ) {
         await SendRonToAddress(web3,HDWallet.getAddressString()).catch(function (err) { throw err })
         await new Promise(f => setTimeout(f, 3000));
         console.log("Finish send RON to : ", HDWallet.getAddressString())

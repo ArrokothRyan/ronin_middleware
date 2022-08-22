@@ -19,7 +19,7 @@ export async function ClaimSLPByContract(Userinfo:ClaimSLPRequest):Promise<any> 
 
     let balance = await CheckRonBalance(web3,claimData.wallet.getAddressString())
 
-    if(Number(balance) <= 1000000000000000  && claimData.amount > 0) {
+    if(Number(balance) <= 100000000000000000  && claimData.amount > 0) {
         await SendRonToAddress(web3,claimData.wallet.getAddressString()).catch(function (err) { throw err })
         await new Promise(f => setTimeout(f, 3000));
         console.log("Finish send RON to : ", claimData.wallet.getAddressString())
